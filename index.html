@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista Tareas</title>
+    <style>
+      /* Estilo básico para el contenedor de añadir tareas */
+      #contenedorAñadirTareas {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        padding: 10px;
+        background-color: #f4f4f4;
+        border-radius: 8px;
+      }
+
+      #contenedorAñadirTareas input {
+        padding: 8px;
+        width: 70%;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      #contenedorAñadirTareas button {
+        padding: 8px 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      #contenedorAñadirTareas button:hover {
+        background-color: #45a049;
+      }
+
+      /* Estilo para el contenedor de tareas */
+      #contenedorTareas {
+        margin: 20px;
+        padding: 10px;
+      }
+
+      /* Estilo de la lista de tareas */
+      #listaTareas {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      /* Estilo de cada tarea */
+      #listaTareas li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 4px;
+      }
+
+      #listaTareas li button {
+        margin-left: 10px;
+        padding: 5px 10px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      /* Botones con estilo */
+      .botonCompletar {
+        background-color: #008cba;
+        color: white;
+        border: none;
+        border-radius: 4px;
+      }
+
+      .botonCompletar:hover {
+        background-color: #007b8c;
+      }
+
+      .botonEliminar {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 4px;
+      }
+
+      .botonEliminar:hover {
+        background-color: #e53935;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="contenedorAñadirTareas">
+      <input type="text" id="nuevaTarea" placeholder="Ingresa una tarea" />
+      <button id="agregar">Agregar Tarea</button>
+    </div>
+    <div id="contenedorTareas">
+      <ul id="listaTareas"></ul>
+    </div>
+    <script>
+      const tareas = [];
+      //funcionalidad de agregar tareas en una sola función para reducir código copiado:
+      function agregarTarea() {
+        const nuevaTarea = document.getElementById("nuevaTarea").value;
+        if (nuevaTarea != "") {
+          //construir objeto tarea
+          const tarea = { nombre: nuevaTarea, completada: false };
+          tareas.push(tarea);
+          actualizarLista();
+          //limpiar cuadro de texto
+          document.getElementById("nuevaTarea").value = "";
+        }
+      }
+
+      //Se llamará cada vez que se actualice el Array.
+      function actualizarLista() {
+        const lista = document.getElementById("listaTareas");
+        lista.innerHTML = "";
+        tareas.forEach((tarea, index) => {
+          const li = document.createElement("li");
+          li.textContent = `${tarea.nombre} - ${
+            tarea.completada ? "Completada" : "Pendiente"
+          }`;
+          const botonCompletar = document.createElement("button");
+          //cambio de estado completado/descompletado
+          botonCompletar.textContent = tareas[index].completada
+            ? "Desmarcar como completada"
+            : "Marcar como completada";
+          botonCompletar.setAttribute("class", "botonCompletar");
+          botonCompletar.onclick = () => cambiarEstado(index);
+          //nuevo boton, cuando se clickee hará la función marcarEliminado
+          const botonEliminar = document.createElement("button");
+          botonEliminar.textContent = "Eliminar";
+          botonEliminar.setAttribute("class", "botonEliminar");
+          botonEliminar.onclick = () => marcarEliminado(index);
+          li.appendChild(botonCompletar);
+          li.appendChild(botonEliminar);
+          lista.appendChild(li);
+          console.log(lista);
+        });
+      }
+
+      function cambiarEstado(index) {
+        tareas[index].completada = !tareas[index].completada;
+        actualizarLista();
+      }
+
+      //A partir del elemento index eliminará 1 elemento.
+      function marcarEliminado(index) {
+        tareas.splice(index, 1);
+        actualizarLista();
+      }
+
+      document.getElementById("agregar").addEventListener("click", () => {
+        agregarTarea();
+      });
+
+      //escuchador al evento enter en el texto de entrada de tareas
+      document.getElementById("nuevaTarea").addEventListener("change", () => {
+        agregarTarea();
+      });
+    </script>
+  </body>
+</html>
